@@ -8,7 +8,7 @@ use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 
-class AzureBlobStorageTest extends TestCase
+class AzureBlobStorageAdapterTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
