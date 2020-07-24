@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
 use Blue32a\Flysystem\AzureBlobStorage\AzureBlobStorageAdapter;
@@ -12,30 +14,98 @@ class AzureBlobStorageAdapterTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    public const CONTAINER_NAME = 'test';
+    /**
+     * @return \Mockery\MockInterface&\Mockery\LegacyMockInterface&AzureBlobStorageAdapter
+     */
+    protected function createTargetMock()
+    {
+        return Mockery::mock(AzureBlobStorageAdapter::class);
+    }
+
+    /**
+     * @return \ReflectionClass
+     */
+    protected function createTargetReflection()
+    {
+        return new \ReflectionClass(AzureBlobStorageAdapter::class);
+    }
+
+    /**
+     * @return \Mockery\MockInterface&\Mockery\LegacyMockInterface&BlobRestProxy
+     */
+    protected function createBlobRestProxyMock()
+    {
+        return Mockery::mock(BlobRestProxy::class);
+    }
 
     /**
      * @test
+     * @return void
+     */
+    public function testSetPublicEndpoint()
+    {
+        $url = 'https://example.com';
+
+        $targetMock = $this->createTargetMock();
+        $targetMock->makePartial();
+
+        $targetRef = $this->createTargetReflection();
+        $publicEndpointRef = $targetRef->getProperty('publicEndpoint');
+        $publicEndpointRef->setAccessible(true);
+
+        $targetMock->setPublicEndpoint($url);
+        $this->assertEquals($url, $publicEndpointRef->getValue($targetMock));
+
+        $targetMock->setPublicEndpoint(null);
+        $this->assertNull($publicEndpointRef->getValue($targetMock));
+    }
+
+    /**
+     * @test
+     * @return void
      */
     public function testGetUrl()
     {
-        $connection = 'DefaultEndpointsProtocol=https;AccountName=example;AccountKey=examplekey';
-        $client = BlobRestProxy::createBlobService($connection);
-        $path = 'dir';
-        $url = 'https://example.com/dir/test.txt';
-        $clientMock = Mockery::mock($client);
-        $adapter = new AzureBlobStorageAdapter($clientMock, self::CONTAINER_NAME);
+        $path = 'sample.txt';
+        $container = 'test';
+        $url = sprintf('https://example.com/%s/%s', $container, $path);
+        $clientMock = $this->createBlobRestProxyMock();
+        $adapter = new AzureBlobStorageAdapter($clientMock, $container);
+        $adapter->setPublicEndpoint(null);
 
-        $refAdapter = new \ReflectionClass($adapter);
-        $refPropertyContainer = $refAdapter->getProperty('container');
-        $refPropertyContainer->setAccessible(true);
+        $targetRef = $this->createTargetReflection();
+        $containerRef = $targetRef->getProperty('container');
+        $containerRef->setAccessible(true);
 
-        $clientMock->shouldReceive('getBlobUrl')
+        $clientMock
+            ->shouldReceive('getBlobUrl')
             ->once()
-            ->with($refPropertyContainer->getValue($adapter), $path)
-            ->andReturn($url)
-            ->getMock();
+            ->with($containerRef->getValue($adapter), $path)
+            ->andReturn($url);
 
         $this->assertEquals($url, $adapter->getUrl($path));
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function testGetUrlWithPublicEndpoint()
+    {
+        $path = 'sample.txt';
+        $container = 'test';
+        $publicEndpoint = 'https://public.example.com';
+        $clientMock = $this->createBlobRestProxyMock();
+        $adapter = new AzureBlobStorageAdapter($clientMock, $container);
+        $adapter->setPublicEndpoint($publicEndpoint);
+
+        $clientMock
+            ->shouldReceive('getBlobUrl')
+            ->never();
+
+        $this->assertEquals(
+            $publicEndpoint . '/' . $container . '/' . $path,
+            $adapter->getUrl($path)
+        );
     }
 }

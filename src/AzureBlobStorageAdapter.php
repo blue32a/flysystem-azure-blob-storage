@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Blue32a\Flysystem\AzureBlobStorage;
 
 use League\Flysystem\AzureBlobStorage\AzureBlobStorageAdapter as BaseStorageAdapter;
@@ -8,10 +10,13 @@ use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 class AzureBlobStorageAdapter extends BaseStorageAdapter
 {
     /** @var BlobRestProxy */
-    private $client;
+    protected $client;
 
     /** @var string */
-    private $container;
+    protected $container;
+
+    /** @var string|null */
+    protected $publicEndpoint;
 
     /**
      * construct
@@ -29,6 +34,15 @@ class AzureBlobStorageAdapter extends BaseStorageAdapter
     }
 
     /**
+     * @param string|null $publicEndpoint
+     * @return void
+     */
+    public function setPublicEndpoint(?string $publicEndpoint): void
+    {
+        $this->publicEndpoint = $publicEndpoint;
+    }
+
+    /**
      * return URL
      *
      * @param string $path
@@ -37,6 +51,10 @@ class AzureBlobStorageAdapter extends BaseStorageAdapter
      */
     public function getUrl($path)
     {
+        if ($this->publicEndpoint) {
+            return sprintf('%s/%s/%s', $this->publicEndpoint, $this->container, $path);
+        }
+
         return $this->client->getBlobUrl($this->container, $path);
     }
 }
