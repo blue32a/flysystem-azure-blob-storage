@@ -50,6 +50,7 @@ class AzureBlobStorageAdapterTest extends TestCase
         $targetMock->makePartial();
 
         $targetRef = $this->createTargetReflection();
+
         $publicEndpointRef = $targetRef->getProperty('publicEndpoint');
         $publicEndpointRef->setAccessible(true);
 
@@ -66,14 +67,16 @@ class AzureBlobStorageAdapterTest extends TestCase
      */
     public function testGetUrl()
     {
-        $path = 'sample.txt';
-        $container = 'test';
-        $url = sprintf('https://example.com/%s/%s', $container, $path);
+        $path       = 'sample.txt';
+        $container  = 'test';
+        $url        = sprintf('https://example.com/%s/%s', $container, $path);
         $clientMock = $this->createBlobRestProxyMock();
+
         $adapter = new AzureBlobStorageAdapter($clientMock, $container);
         $adapter->setPublicEndpoint(null);
 
         $targetRef = $this->createTargetReflection();
+
         $containerRef = $targetRef->getProperty('container');
         $containerRef->setAccessible(true);
 
@@ -92,10 +95,11 @@ class AzureBlobStorageAdapterTest extends TestCase
      */
     public function testGetUrlWithPublicEndpoint()
     {
-        $path = 'sample.txt';
-        $container = 'test';
+        $path           = 'sample.txt';
+        $container      = 'test';
         $publicEndpoint = 'https://public.example.com';
-        $clientMock = $this->createBlobRestProxyMock();
+        $clientMock     = $this->createBlobRestProxyMock();
+
         $adapter = new AzureBlobStorageAdapter($clientMock, $container);
         $adapter->setPublicEndpoint($publicEndpoint);
 
