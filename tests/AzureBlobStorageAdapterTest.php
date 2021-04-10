@@ -40,9 +40,8 @@ class AzureBlobStorageAdapterTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
-    public function testSetPublicEndpoint()
+    public function testSetPublicEndpoint(): void
     {
         $url = 'https://example.com';
 
@@ -63,9 +62,8 @@ class AzureBlobStorageAdapterTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
-    public function testGetUrl()
+    public function testGetUrl(): void
     {
         $path       = 'sample.txt';
         $container  = 'test';
@@ -91,9 +89,8 @@ class AzureBlobStorageAdapterTest extends TestCase
 
     /**
      * @test
-     * @return void
      */
-    public function testGetUrlWithPublicEndpoint()
+    public function testGetUrlWithPublicEndpoint(): void
     {
         $path           = 'sample.txt';
         $container      = 'test';
