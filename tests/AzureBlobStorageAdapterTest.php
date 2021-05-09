@@ -8,14 +8,17 @@ use Blue32a\Flysystem\AzureBlobStorage\AzureBlobStorageAdapter;
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery\LegacyMockInterface;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class AzureBlobStorageAdapterTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
     /**
-     * @return \Mockery\MockInterface&\Mockery\LegacyMockInterface&AzureBlobStorageAdapter
+     * @return MockInterface&LegacyMockInterface&AzureBlobStorageAdapter
      */
     protected function createTargetMock()
     {
@@ -23,15 +26,15 @@ class AzureBlobStorageAdapterTest extends TestCase
     }
 
     /**
-     * @return \ReflectionClass
+     * @return ReflectionClass
      */
     protected function createTargetReflection()
     {
-        return new \ReflectionClass(AzureBlobStorageAdapter::class);
+        return new ReflectionClass(AzureBlobStorageAdapter::class);
     }
 
     /**
-     * @return \Mockery\MockInterface&\Mockery\LegacyMockInterface&BlobRestProxy
+     * @return MockInterface&LegacyMockInterface&BlobRestProxy
      */
     protected function createBlobRestProxyMock()
     {
