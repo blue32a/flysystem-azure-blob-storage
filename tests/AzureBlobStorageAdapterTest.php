@@ -25,10 +25,7 @@ class AzureBlobStorageAdapterTest extends TestCase
         return Mockery::mock(AzureBlobStorageAdapter::class);
     }
 
-    /**
-     * @return ReflectionClass
-     */
-    protected function createTargetReflection()
+    protected function createTargetReflection(): ReflectionClass
     {
         return new ReflectionClass(AzureBlobStorageAdapter::class);
     }

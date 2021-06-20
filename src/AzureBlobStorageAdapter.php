@@ -18,12 +18,7 @@ class AzureBlobStorageAdapter extends BaseStorageAdapter
     /** @var string|null */
     protected $publicEndpoint;
 
-    /**
-     * @param BlobRestProxy $client
-     * @param string        $container
-     * @param string|null   $prefix
-     */
-    public function __construct(BlobRestProxy $client, $container, $prefix = null)
+    public function __construct(BlobRestProxy $client, string $container, ?string $prefix = null)
     {
         $this->client    = $client;
         $this->container = $container;
@@ -38,11 +33,8 @@ class AzureBlobStorageAdapter extends BaseStorageAdapter
 
     /**
      * @see \Illuminate\Filesystem\FilesystemAdapter::url()
-     *
-     * @param string $path
-     * @return string
      */
-    public function getUrl($path)
+    public function getUrl(string $path): string
     {
         if ($this->publicEndpoint) {
             return sprintf('%s/%s/%s', $this->publicEndpoint, $this->container, $path);

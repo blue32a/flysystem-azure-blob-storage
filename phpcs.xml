@@ -10,4 +10,17 @@
 
     <rule ref="Blue32a"/>
 
+    <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint">
+        <properties>
+            <!-- Follow PHP7.3 or less -->
+            <property name="enableNativeTypeHint" value="false"/>
+
+            <property name="traversableTypeHints" type="array">
+                <element value="Traversable"/>
+                <element value="Iterator"/>
+                <element value="IteratorAggregate"/>
+            </property>
+        </properties>
+    </rule>
+
 </ruleset>
